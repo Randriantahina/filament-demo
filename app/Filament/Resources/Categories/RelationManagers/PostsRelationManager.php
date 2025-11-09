@@ -18,64 +18,109 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Table;
 
 class PostsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'posts';
+    protected static string $relationship = "posts";
 
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required(),
-                TextInput::make('slug')
-                    ->required(),
-                Textarea::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
-            ]);
+        return $schema->columns(2)->components([
+            Section::make("Détails de l’article")
+                ->description(
+                    "Renseignez les informations principales de l’article.",
+                )
+                ->schema([
+                    TextInput::make("title")
+                        ->label("Titre")
+                        ->required()
+                        ->maxLength(255)
+                        ->placeholder("Entrez le titre de l’article"),
+
+                    TextInput::make("slug")
+                        ->label("Slug")
+                        ->required()
+                        ->maxLength(255)
+                        ->placeholder("ex: mon-article-exemple"),
+                ]),
+
+            Section::make("Contenu")
+                ->description("Rédigez le contenu principal de l’article.")
+                ->schema([
+                    Textarea::make("content")
+                        ->label("Contenu")
+                        ->required()
+                        ->rows(8)
+                        ->columnSpanFull()
+                        ->placeholder(
+                            "Écrivez le contenu de votre article ici...",
+                        ),
+                ]),
+
+            Section::make("Auteur")
+                ->description("Sélectionnez l’auteur de cet article.")
+                ->schema([
+                    Select::make("user_id")
+                        ->label("Auteur")
+                        ->relationship("user", "name")
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                ]),
+        ]);
     }
 
     public function infolist(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextEntry::make('title'),
-                TextEntry::make('slug'),
-                TextEntry::make('content')
-                    ->columnSpanFull(),
-                TextEntry::make('user.name')
-                    ->label('User'),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-            ]);
+        return $schema->columns(1)->components([
+            Section::make("Informations principales")
+                ->columns(3)
+                ->schema([
+                    TextEntry::make("title")->label("Titre"),
+
+                    TextEntry::make("slug")->label("Slug"),
+
+                    TextEntry::make("user.name")->label("Auteur"),
+                ]),
+
+            Section::make("Contenu")->schema([
+                TextEntry::make("content")
+                    ->label("Contenu")
+                    ->columnSpanFull()
+                    ->placeholder("Aucun contenu disponible"),
+            ]),
+
+            Section::make("Métadonnées")
+                ->columns(2)
+                ->schema([
+                    TextEntry::make("created_at")
+                        ->label("Créé le")
+                        ->dateTime()
+                        ->placeholder("-"),
+
+                    TextEntry::make("updated_at")
+                        ->label("Mis à jour le")
+                        ->dateTime()
+                        ->placeholder("-"),
+                ]),
+        ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute("title")
             ->columns([
-                TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('user.name')
-                    ->searchable(),
-                TextColumn::make('created_at')
+                TextColumn::make("title")->searchable(),
+                TextColumn::make("slug")->searchable(),
+                TextColumn::make("user.name")->searchable(),
+                TextColumn::make("created_at")
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make("updated_at")
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -83,14 +128,10 @@ class PostsRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
-            ])
+            ->headerActions([CreateAction::make()])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
