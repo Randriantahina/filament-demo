@@ -16,11 +16,16 @@ class ViewCategory extends ViewRecord
 
     protected function getHeaderActions(): array
     {
-        return [EditAction::make()];
+        return [
+            EditAction::make()->hidden(
+                fn(ViewCategory $livewire) => $livewire->activeTab !==
+                    "details",
+            ),
+        ];
     }
 
-    public function getRelations(): array
-    {
-        return [];
-    }
+    // public function getRelations(): array
+    // {
+    //     return [];
+    // }
 }
