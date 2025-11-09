@@ -2,12 +2,10 @@
 
 namespace App\Filament\Resources\Categories\RelationManagers;
 
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -24,6 +22,11 @@ use Filament\Tables\Table;
 class PostsRelationManager extends RelationManager
 {
     protected static string $relationship = "posts";
+
+    public function isReadOnly(): bool
+    {
+        return false;
+    }
 
     public function form(Schema $schema): Schema
     {
@@ -57,6 +60,16 @@ class PostsRelationManager extends RelationManager
                         ->placeholder(
                             "Écrivez le contenu de votre article ici...",
                         ),
+                ]),
+            Section::make("Catégorie")
+                ->description("Sélectionnez la catégorie de cet article.")
+                ->schema([
+                    Select::make("category_id")
+                        ->label("Catégorie")
+                        ->relationship("category", "name")
+                        ->required()
+                        ->searchable()
+                        ->preload(),
                 ]),
 
             Section::make("Auteur")

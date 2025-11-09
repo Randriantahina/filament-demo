@@ -40,18 +40,16 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            PostsRelationManager::class,
-        ];
+        return [PostsRelationManager::class];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListCategories::route('/'),
-            'create' => CreateCategory::route('/create'),
-            'view' => ViewCategory::route('/{record}'),
-            'edit' => EditCategory::route('/{record}/edit'),
+            "index" => ListCategories::route("/"),
+            "create" => CreateCategory::route("/create"),
+            "view" => ViewCategory::route("/{record}"),
+            "edit" => EditCategory::route("/{record}/edit"),
         ];
     }
 }

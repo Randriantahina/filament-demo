@@ -12,13 +12,14 @@ class PostInfolist
     {
         return $schema->columns(1)->components([
             Section::make("Informations principales")
-                ->columns(3)
+                ->columns(4)
                 ->schema([
                     TextEntry::make("title")->label("Titre"),
 
                     TextEntry::make("slug")->label("Slug"),
 
                     TextEntry::make("user.name")->label("Auteur"),
+                    TextEntry::make("category.name")->label("Catégorie"),
                 ]),
 
             Section::make("Contenu")->schema([

@@ -22,7 +22,7 @@
     @endif
 
     @if ($this->activeTab === 'posts')
-        @livewire(\App\Filament\Resources\Categories\RelationManagers\PostsRelationManager::class, ['ownerRecord' => $record, 'pageClass' => \App\Filament\Resources\Categories\Pages\EditCategory::class])
+        @livewire(\App\Filament\Resources\Categories\RelationManagers\PostsRelationManager::class, ['ownerRecord' => $record, 'pageClass' => static::class])
     @endif
 
 </x-filament-panels::page>

@@ -43,6 +43,16 @@ class PostForm
                             "Écrivez le contenu de votre article ici...",
                         ),
                 ]),
+            Section::make("Catégorie")
+                ->description("Sélectionnez la catégorie de cet article.")
+                ->schema([
+                    Select::make("category_id")
+                        ->label("Catégorie")
+                        ->relationship("category", "name")
+                        ->required()
+                        ->searchable()
+                        ->preload(),
+                ]),
 
             Section::make("Auteur")
                 ->description("Sélectionnez l’auteur de cet article.")
